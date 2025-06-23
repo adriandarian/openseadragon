@@ -638,15 +638,15 @@
                 return [...Array(numTextures).keys()].map(index => `${index > 0 ? 'else ' : ''}if(int(a_index) == ${index}) { transform_matrix = u_matrix_${index}; }`).join('\n');
             };
 
-            const vertexShaderProgram = `
-            attribute vec2 a_output_position;
-            attribute vec2 a_texture_position;
-            attribute float a_index;
+            const vertexShaderProgram = `#version 300 es
+            in vec2 a_output_position;
+            in vec2 a_texture_position;
+            in float a_index;
 
             ${makeMatrixUniforms()} // create a uniform mat3 for each potential tile to draw
 
-            varying vec2 v_texture_position;
-            varying float v_image_index;
+            out vec2 v_texture_position;
+            out float v_image_index;
 
             void main() {
 
@@ -661,7 +661,7 @@
             }
             `;
 
-            const fragmentShaderProgram = `
+            const fragmentShaderProgram = `#version 300 es
             precision mediump float;
 
             // our textures
@@ -670,14 +670,16 @@
             uniform float u_opacities[${numTextures}];
 
             // the varyings passed in from the vertex shader.
-            varying vec2 v_texture_position;
-            varying float v_image_index;
+            in vec2 v_texture_position;
+            in float v_image_index;
+
+            out vec4 outColor;
 
             void main() {
                 // can't index directly with a variable, need to use a loop iterator hack
                 for(int i = 0; i < ${numTextures}; ++i){
                     if(i == int(v_image_index)){
-                        gl_FragColor = texture2D(u_images[i], v_texture_position) * u_opacities[i];
+                        outColor = texture(u_images[i], v_texture_position) * u_opacities[i];
                     }
                 }
             }
@@ -727,11 +729,11 @@
 
         // private
         _makeSecondPassShaderProgram(){
-            const vertexShaderProgram = `
-            attribute vec2 a_output_position;
-            attribute vec2 a_texture_position;
+            const vertexShaderProgram = `#version 300 es
+            in vec2 a_output_position;
+            in vec2 a_texture_position;
 
-            varying vec2 v_texture_position;
+            out vec2 v_texture_position;
 
             void main() {
                 // Transform to clip space (0:1 --> -1:1)
@@ -741,21 +743,23 @@
             }
             `;
 
-            const fragmentShaderProgram = `
+            const fragmentShaderProgram = `#version 300 es
             precision mediump float;
 
             // our texture
             uniform sampler2D u_image;
 
             // the texCoords passed in from the vertex shader.
-            varying vec2 v_texture_position;
+            in vec2 v_texture_position;
 
             // the opacity multiplier for the image
             uniform float u_opacity_multiplier;
 
+            out vec4 outColor;
+
             void main() {
-                gl_FragColor = texture2D(u_image, v_texture_position);
-                gl_FragColor *= u_opacity_multiplier;
+                outColor = texture(u_image, v_texture_position);
+                outColor *= u_opacity_multiplier;
             }
             `;
 
