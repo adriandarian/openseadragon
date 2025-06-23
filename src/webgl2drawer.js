@@ -1,6 +1,6 @@
 
 /*
- * OpenSeadragon - CustomDrawer
+ * OpenSeadragon - WebGL2Drawer
  *
  * Copyright (C) 2009 CodePlex Foundation
  * Copyright (C) 2010-2025 OpenSeadragon contributors
@@ -38,15 +38,15 @@
     const OpenSeadragon = $; // alias for JSDoc
 
    /**
-    * @class OpenSeadragon.CustomDrawer
-    * @classdesc Default implementation of CustomDrawer for an {@link OpenSeadragon.Viewer}. The CustomDrawer
+    * @class OpenSeadragon.WebGL2Drawer
+    * @classdesc Default implementation of WebGL2Drawer for an {@link OpenSeadragon.Viewer}. The WebGL2Drawer
     * defines its own data type that ensures textures are correctly loaded to and deleted from the GPU memory.
     * The drawer utilizes a context-dependent two pass drawing pipeline. For the first pass, tile composition
     * for a given TiledImage is always done using a canvas with a WebGL context. This allows tiles to be stitched
     * together without seams or artifacts, without requiring a tile source with overlap. If overlap is present,
     * overlapping pixels are discarded. The second pass copies all pixel data from the WebGL context onto an output
     * canvas with a Context2d context. This allows applications to have access to pixel data and other functionality
-    * provided by Context2d, regardless of whether the CanvasDrawer or the CustomDrawer is used. Certain options,
+    * provided by Context2d, regardless of whether the CanvasDrawer or the WebGL2Drawer is used. Certain options,
     * including compositeOperation, clip, croppingPolygons, and debugMode are implemented using Context2d operations;
     * in these scenarios, each TiledImage is drawn onto the output canvas immediately after the tile composition step
     * (pass 1). Otherwise, for efficiency, all TiledImages are copied over to the output canvas at once, after all
@@ -57,21 +57,21 @@
     * @param {Element} options.element - Parent element.
     * @param {Number} [options.debugGridColor] - See debugGridColor in {@link OpenSeadragon.Options} for details.
     */
-    OpenSeadragon.CustomDrawer = class CustomDrawer extends OpenSeadragon.DrawerBase{
+    OpenSeadragon.WebGL2Drawer = class WebGL2Drawer extends OpenSeadragon.DrawerBase{
         constructor(options){
            super(options);
 
             /**
              * The HTML element (canvas) that this drawer uses for drawing
              * @member {Element} canvas
-             * @memberof OpenSeadragon.CustomDrawer#
+             * @memberof OpenSeadragon.WebGL2Drawer#
              */
 
             /**
              * The parent element of this Drawer instance, passed in when the Drawer was created.
-             * The parent of {@link OpenSeadragon.CustomDrawer#canvas}.
+             * The parent of {@link OpenSeadragon.WebGL2Drawer#canvas}.
              * @member {Element} container
-             * @memberof OpenSeadragon.CustomDrawer#
+             * @memberof OpenSeadragon.WebGL2Drawer#
              */
 
             // private members
@@ -91,8 +91,8 @@
             this._imageSmoothingEnabled = true; // will be updated by setImageSmoothingEnabled
 
             // Reject listening for the tile-drawing and tile-drawn events, which this drawer does not fire
-            this.viewer.rejectEventHandler("tile-drawn", "The CustomDrawer does not raise the tile-drawn event");
-            this.viewer.rejectEventHandler("tile-drawing", "The CustomDrawer does not raise the tile-drawing event");
+            this.viewer.rejectEventHandler("tile-drawn", "The WebGL2Drawer does not raise the tile-drawn event");
+            this.viewer.rejectEventHandler("tile-drawing", "The WebGL2Drawer does not raise the tile-drawing event");
 
             // this.viewer and this.canvas are part of the public DrawerBase API
             // and are defined by the parent DrawerBase class. Additional setup is done by
@@ -201,10 +201,10 @@
 
         /**
          *
-        * @returns {string} 'custom'
+        * @returns {string} 'webgl2'
         */
         getType(){
-            return 'custom';
+            return 'webgl2';
         }
 
         /**
@@ -882,7 +882,7 @@
                 if (isCanvas && $.isCanvasTainted(data)){
                     tiledImage.setTainted(true);
                     $.console.warn('WebGL cannot be used to draw this TiledImage because it has tainted data. Does crossOriginPolicy need to be set?');
-                    this._raiseDrawerErrorEvent(tiledImage, 'Tainted data cannot be used by the CustomDrawer. Falling back to CanvasDrawer for this TiledImage.');
+                    this._raiseDrawerErrorEvent(tiledImage, 'Tainted data cannot be used by the WebGL2Drawer. Falling back to CanvasDrawer for this TiledImage.');
                     this.setInternalCacheNeedsRefresh();
                 } else {
                     let sourceWidthFraction, sourceHeightFraction;

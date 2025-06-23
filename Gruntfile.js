@@ -65,7 +65,7 @@ module.exports = function(grunt) {
             "src/htmldrawer.js",
             "src/canvasdrawer.js",
             "src/webgldrawer.js",
-            "src/customdrawer.js",
+            "src/webgl2drawer.js",
             "src/viewport.js",
             "src/tiledimage.js",
             "src/tilecache.js",
