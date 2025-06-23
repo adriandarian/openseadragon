@@ -193,7 +193,7 @@
         'DrawerBase': ['viewer', 'viewport'],
         'CanvasDrawer': ['viewer', 'viewport'],
         'WebGLDrawer': ['viewer', 'viewport'],
-        'CustomDrawer': ['viewer', 'viewport'],
+        'WebGL2Drawer': ['viewer', 'viewport'],
         'TiledImage': ['viewer', '_drawer'],
     };
     for ( var i in testLog ) {
