@@ -190,8 +190,8 @@
   *     Zoom level to use when image is first opened or the home button is clicked.
   *     If 0, adjusts to fit viewer.
   *
-  * @property {String|DrawerImplementation|Array} [drawer = ['webgl', 'canvas', 'html']]
-  *     Which drawer to use. Valid strings are 'webgl', 'canvas', and 'html'. Valid drawer
+ * @property {String|DrawerImplementation|Array} [drawer = ['webgl', 'canvas', 'html', 'custom']]
+ *     Which drawer to use. Valid strings are 'webgl', 'canvas', 'html', and 'custom'. Valid drawer
   *     implementations are constructors of classes that extend OpenSeadragon.DrawerBase.
   *     An array of strings and/or constructors can be used to indicate the priority
   *     of different implementations, which will be tried in order based on browser support.
@@ -1399,7 +1399,7 @@ function OpenSeadragon( options ){
             compositeOperation:                null, // to be passed into each TiledImage
 
             // DRAWER SETTINGS
-            drawer:                            ['webgl', 'canvas', 'html'], // prefer using webgl, then canvas (i.e. context2d), then fallback to html
+            drawer:                            ['webgl', 'canvas', 'html', 'custom'], // prefer using webgl, then canvas (i.e. context2d), then fallback to html
 
             drawerOptions: {
                 webgl: {
